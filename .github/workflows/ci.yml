@@ -49,15 +49,15 @@ jobs:
           REDIS_URL: redis://localhost:6379/0
           RAILS_ENV: test
         run: |
-          bin/rails db:setup
+          sudo bin/rails db:setup
 
       - name: Run tests
-        run: bin/rspec
+        run: sudo bin/rspec
 
       - name: Run security checks
         run: | 
-          bin/bundler-audit --update
-          bin/brakeman -q -w2
+          sudo bin/bundler-audit --update
+          sudo bin/brakeman -q -w2
 
   rubocop:
     name: Rubocop
