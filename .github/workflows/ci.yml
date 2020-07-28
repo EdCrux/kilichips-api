@@ -4,8 +4,15 @@ jobs:
   test: 
     runs-on: ubuntu-latest
     services: 
-      db: 
-        image: postgres:11
+      postgres: 
+        image: postgres
+        enviroment: 
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_URL: postgres://admin:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/test
+          POSTGRES_DB: test
+          POSTGRES_HOST: postgres
+
         ports: ['5432:5432']
         options: >-
           --health-cmd pg_isready
@@ -24,8 +31,7 @@ jobs:
           ruby-version: 2.5.x
       - name: Build and run tests
         env: 
-          DATABASE_URL: postgres://postgres:@localhost:5432/test
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_URL: postgres://postgres:@localhost:5432/test
           REDIS_URL: redis://localhost:6379/0
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
