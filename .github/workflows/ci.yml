@@ -1,0 +1,77 @@
+name: CI
+on: [push, pull_request]
+jobs: 
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    services:
+
+      postgres: 
+        image: postgres
+        env: 
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_URL: postgres://admin:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/test
+          POSTGRES_DB: test
+          POSTGRES_HOST: postgres
+        ports: 
+          - '5432:5432'
+
+      redis: 
+        image: redis
+        ports: ['6379:6379']
+        options: --entrypoint redis-server
+
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.5.x
+      - name: Ruby gem cache
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Install gems
+        run: |
+          gem install bundler:2.1.4
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+
+      - name: Setup test database
+        env: 
+          POSTGRES_URL: postgres://postgres:@localhost:5432/test
+          REDIS_URL: redis://localhost:6379/0
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        run: |
+          sudo apt-get -yqq install libpq-dev
+          bundle exec rails db:prepare
+
+      - name: Run tests
+        run: bundle exec rspec
+
+      - name: Run security checks
+        run: | 
+          bundle exec bundler-audit --update
+          bundle exec brakeman -q -w2
+
+  rubocop:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
+      - name: Setup Rubocop
+        run: |
+          gem install --no-document rubocop:'~>0.81.0' # https://docs.rubocop.org/en/stable/installation/
+          [ -f .rubocop.yml ] || wget https://raw.githubusercontent.com/microverseinc/linters-config/master/ror/.rubocop.yml
+      - name: Rubocop Report
+        run: rubocop --color
