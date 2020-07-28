@@ -6,7 +6,7 @@ jobs:
     services: 
       postgres: 
         image: postgres
-        enviroment: 
+        env: 
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_URL: postgres://admin:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/test
