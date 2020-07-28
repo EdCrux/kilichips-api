@@ -4,7 +4,8 @@ jobs:
   test:
     name: Tests 
     runs-on: ubuntu-latest
-    services: 
+    services:
+
       postgres: 
         image: postgres
         env: 
@@ -19,10 +20,12 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
       redis: 
         image: redis
         ports: ['6379:6379']
         options: --entrypoint redis-server
+
     steps: 
       - name: Checkout code
       - uses: actions/checkout@v2
@@ -34,20 +37,22 @@ jobs:
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          
       - name: Install gems
         run: | 
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
+
       - name: Setup test database
         env: 
           POSTGRES_URL: postgres://postgres:@localhost:5432/test
           REDIS_URL: redis://localhost:6379/0
           RAILS_ENV: test
-        run: |
-          bin/rails db:setup
+        run: bin/rails db:setup
+
       - name: Run tests
-        run: |
-          bin/rspec
+        run: bin/rspec
+
       - name: Run security checks
         run: |
           bin/bundler-audit --update
