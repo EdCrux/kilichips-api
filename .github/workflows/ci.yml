@@ -1,7 +1,8 @@
 name: CI
 on: [push, pull_request]
 jobs: 
-  test: 
+  test:
+    name: Tests 
     runs-on: ubuntu-latest
     services: 
       postgres: 
@@ -12,7 +13,6 @@ jobs:
           POSTGRES_URL: postgres://admin:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/test
           POSTGRES_DB: test
           POSTGRES_HOST: postgres
-
         ports: ['5432:5432']
         options: >-
           --health-cmd pg_isready
@@ -24,23 +24,35 @@ jobs:
         ports: ['6379:6379']
         options: --entrypoint redis-server
     steps: 
+      - name: Checkout code
       - uses: actions/checkout@v2
+
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
-        with: 
-          ruby-version: 2.5.x
-      - name: Build and run tests
+      - name: Ruby gem cache
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+      - name: Install gems
+        run: | 
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+      - name: Setup test database
         env: 
           POSTGRES_URL: postgres://postgres:@localhost:5432/test
           REDIS_URL: redis://localhost:6379/0
           RAILS_ENV: test
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-        run: 
-          sudo apt-get -yqq install libpq-dev
-          gem install bundler
-          bundle install 
-          bundle exec rails db:prepare
-          bundle exec rspec
+        run: |
+          bin/rails db:setup
+      - name: Run tests
+        run: |
+          bin/rspec
+      - name: Run security checks
+        run: |
+          bin/bundler-audit --update
+          bin/brakeman -q -w2
+
   rubocop:
     name: Rubocop
     runs-on: ubuntu-latest
