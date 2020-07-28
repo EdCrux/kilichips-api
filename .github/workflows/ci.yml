@@ -1,8 +1,8 @@
 name: CI
 on: [push, pull_request]
 jobs: 
-  test:
-    name: Tests 
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
     services:
 
@@ -14,12 +14,8 @@ jobs:
           POSTGRES_URL: postgres://admin:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/test
           POSTGRES_DB: test
           POSTGRES_HOST: postgres
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        ports: 
+          - '5432:5432'
 
       redis: 
         image: redis
@@ -31,13 +27,14 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Ruby
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
       - name: Ruby gem cache
         uses: actions/cache@v1
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          
+          restore-keys: |
+            ${{ runner.os }}-gems-
       - name: Install gems
         run: | 
           bundle config path vendor/bundle
@@ -48,13 +45,14 @@ jobs:
           POSTGRES_URL: postgres://postgres:@localhost:5432/test
           REDIS_URL: redis://localhost:6379/0
           RAILS_ENV: test
-        run: bin/rails db:setup
+        run: |
+          bin/rails db:setup
 
       - name: Run tests
         run: bin/rspec
 
       - name: Run security checks
-        run: |
+        run: | 
           bin/bundler-audit --update
           bin/brakeman -q -w2
 
