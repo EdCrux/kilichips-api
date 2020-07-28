@@ -48,16 +48,18 @@ jobs:
           POSTGRES_URL: postgres://postgres:@localhost:5432/test
           REDIS_URL: redis://localhost:6379/0
           RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         run: |
-          sudo bin/rails db:setup
+          sudo apt-get -yqq install libpq-dev
+          bundle exec rails db:prepare
 
       - name: Run tests
-        run: sudo bin/rspec
+        run: bundle exec rspec
 
       - name: Run security checks
         run: | 
-          sudo bin/bundler-audit --update
-          sudo bin/brakeman -q -w2
+          bundle exec bundler-audit --update
+          bundle exec brakeman -q -w2
 
   rubocop:
     name: Rubocop
