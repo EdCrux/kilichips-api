@@ -1,5 +1,5 @@
 name: CI
-on: [push, pull_requets]
+on: [push, pull_request]
 jobs: 
   test: 
     runs-on: ubuntu-latest
@@ -34,3 +34,17 @@ jobs:
           bundle install --jobs 4 --retry 3
           bundle exec rails db:prepare
           bundle exec rspec
+  rubocop:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
+      - name: Setup Rubocop
+        run: |
+          gem install --no-document rubocop:'~>0.81.0' # https://docs.rubocop.org/en/stable/installation/
+          [ -f .rubocop.yml ] || wget https://raw.githubusercontent.com/microverseinc/linters-config/master/ror/.rubocop.yml
+      - name: Rubocop Report
+        run: rubocop --color
