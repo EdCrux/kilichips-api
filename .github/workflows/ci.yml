@@ -45,6 +45,7 @@ jobs:
 
       - name: Setup test database
         env: 
+          POSTGRES_URL: postgres://postgres:@localhost:5432/test
           REDIS_URL: redis://localhost:6379/0
           RAILS_ENV: test
         run: |
