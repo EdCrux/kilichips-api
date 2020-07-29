@@ -1,11 +1,12 @@
-FROM ruby:2.5
-RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
-RUN mkdir /kilichips-api
-WORKDIR /kilichips-api
-COPY Gemfile /kilichips-api/Gemfile
-COPY Gemfile.lock /kilichips-api/Gemfile.lock
+FROM ruby:2.7.1
+
+RUN apt-get update && apt-get install -y postgresql-client nodejs build-essential
+
+WORKDIR /usr/src/kilichips-api
+
+COPY Gemfile* ./
 RUN bundle install
-COPY . /kilichips-api
+COPY . . 
 
 # Add a script to be executed every time the container starts.
 

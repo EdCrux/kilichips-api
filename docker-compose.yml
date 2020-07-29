@@ -1,28 +1,22 @@
-version: '3'
-services:
-  postgres:
-    image: postgres
-    volumes:
-      - ./tmp/db:/var/lib/postgresql/data
+version: '3.4'
+
+services: 
+  pg: 
+    image: postgres:latest
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_URL: postgres://admin:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/test
-      POSTGRES_DB: test
-      POSTGRES_HOST: postgres
-  redis: 
-    image: redis
-    ports: 
-      - "6379:6379"
-  rails:
-    build: .
-    command: "bundle exec rails s -p 3000 -b '0.0.0.0'"
-    volumes:
-      - .:/kilichips-api
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_URI: postgres://postgres:secret@localhost:5432/
     ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-      - redis
+      - 5432:5432
+  app: 
+    image: kilichips/kiliapi:v1
+    ports: 
+      - 3000:3000
     environment: 
-      REDIS_URL: redis://redis:6379
+      POSTGRES_URL: postgres://postgres:secret@localhost:5432/
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_HOST: pg
+      POSTGRES_PORT: 5432
+  
