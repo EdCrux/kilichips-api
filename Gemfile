@@ -7,7 +7,7 @@ ruby '2.7.1'
 
 gem 'activeadmin'
 gem 'activeadmin_medium_editor'
-gem "active_skin"
+gem 'active_skin'
 gem 'devise'
 gem 'devise_token_auth'
 gem 'excon', '~> 0.71.0'

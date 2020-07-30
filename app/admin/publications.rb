@@ -1,5 +1,4 @@
 ActiveAdmin.register Publication do
-
   # See permitted parameters documentation:
   permit_params :title, :content, :category_publication_id, :admin_user_id
 
