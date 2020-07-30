@@ -11,23 +11,23 @@
 @import "active_admin/mixins";
 @import "active_admin/base";
 
-#header h1.site_title {
-  text-indent: 0%;
-  padding-left: 30px;
-img {
-    height: 25px;
-    margin-top: 7px;
-  }
-}
-
 // Overriding any non-variable SASS must be done after the fact.
 // For example, to change the default status-tag color:
 //
 //   .status_tag { background: #6090DB; }
-$skinLogo: none;
 
 $skinActiveColor: #40AA52;
 $skinHeaderBck: #194320;
 $panelHeaderBck: #FF5000;
 
+
+#header h1.site_title {
+  text-indent: 0%;
+  padding-left: 30px;
+  img {
+    height: 25px;
+    margin-top: 7px;
+  }
+}
+$skinLogo: url("Logo.svg") no-repeat 0 0;
 @import "active_skin";
