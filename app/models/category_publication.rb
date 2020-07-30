@@ -1,0 +1,2 @@
+class CategoryPublication < ApplicationRecord
+end
