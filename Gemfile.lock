@@ -37,6 +37,7 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_skin (0.0.13)
     activeadmin (2.7.0)
       arbre (~> 1.2, >= 1.2.1)
       formtastic (~> 3.1)
@@ -48,6 +49,8 @@ GEM
       ransack (~> 2.1, >= 2.1.1)
       sassc-rails (~> 2.1)
       sprockets (>= 3.0, < 4.1)
+    activeadmin_medium_editor (0.2.4)
+      activeadmin (>= 1.0)
     activejob (6.0.3.2)
       activesupport (= 6.0.3.2)
       globalid (>= 0.3.6)
@@ -282,7 +285,9 @@ PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
+  active_skin
   activeadmin
+  activeadmin_medium_editor
   bootsnap (>= 1.4.2)
   brakeman
   bundler-audit

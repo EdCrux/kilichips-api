@@ -2,19 +2,15 @@ version: '3.4'
 
 services: 
   pg: 
-    image: postgres:latest
+    image: postgres:11.5
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
-      POSTGRES_URI: postgres://postgres:secret@localhost:5432/
-    ports:
-      - 5432:5432
+    ports: ["5432:5432"]
   app: 
     image: kilichips/kiliapi:v1
-    ports: 
-      - 3000:3000
+    ports: ["3000:3000"]
     environment: 
-      POSTGRES_URL: postgres://postgres:secret@localhost:5432/
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
       POSTGRES_HOST: pg
