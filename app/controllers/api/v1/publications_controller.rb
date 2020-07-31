@@ -1,4 +1,4 @@
-class API::V1::PublicationsController < ApiController
+class API::V1::PublicationsController < APIController
 
   def index
     @publication = Publication.all

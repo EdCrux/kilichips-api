@@ -5,7 +5,7 @@ Rails.application.routes.draw do
       namespace :v1 do
         mount_devise_token_auth_for 'User', at: 'auth'
         get '/health' , to: 'health#health'
-        get '/publications', to: 'publications#index'
+        get '/publications', to: 'publications#index' , at: 'auth'
       end
     end
   #end
