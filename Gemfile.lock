@@ -107,6 +107,9 @@ GEM
     formtastic_i18n (0.6.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    haml (5.1.2)
+      temple (>= 0.8.0)
+      tilt
     has_scope (0.7.2)
       actionpack (>= 4.1)
       activesupport (>= 4.1)
@@ -261,6 +264,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     stripe (5.22.0)
+    temple (0.8.2)
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -295,6 +299,7 @@ DEPENDENCIES
   excon (~> 0.71.0)
   factory_bot
   fast_jsonapi
+  haml
   image_processing (~> 1.2)
   pg (>= 0.18, < 2.0)
   puma (~> 4.1)

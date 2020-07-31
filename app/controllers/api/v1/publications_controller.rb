@@ -1,6 +1,6 @@
 module API
- module V1
-  class PublicationsController < APIController
+  module V1
+    class PublicationsController < APIController
 
       def index
         @publications = Publication.all
